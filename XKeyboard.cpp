@@ -8,6 +8,8 @@
 // any later version.
 //
 // $Id: XKeyboard.cpp 53 2008-07-18 08:38:47Z jay $
+//
+// 2010-01-02 Kristian Setälä added code to retrieve layout variant information
 
 #include "XKeyboard.h"
 #include "X11Exception.h"
@@ -70,7 +72,7 @@ Bool XKeyboard::initializeXkb()
     int major = XkbMajorVersion;
     int minor = XkbMinorVersion;
     int opCode;
-    Bool status = XkbQueryExtension(_display, &opCode, &_baseEventCode, &_baseErrorCode,  &major, &minor);
+    /*Bool status =*/ XkbQueryExtension(_display, &opCode, &_baseEventCode, &_baseErrorCode,  &major, &minor);
 
     XkbDescRec* kbdDescPtr = XkbAllocKeyboard();
     if (kbdDescPtr == NULL) {
@@ -145,7 +147,7 @@ Bool XKeyboard::initializeXkb()
     }
 
     XkbSymbolParser symParser;
-    symParser.parse(symName, _symbolNames);
+    symParser.parse(symName, _symbolNames, _variantNames);
     int count = _symbolNames.size();
     if (count == 1 && _groupNames[0].empty()  && _symbolNames[0] == "jp") {
         _groupCount = 2;
@@ -245,6 +247,11 @@ StringVector XKeyboard::groupSymbols() const
     return _symbolNames;
 }
 
+StringVector XKeyboard::groupVariants() const
+{
+    return _variantNames;
+}
+
 int XKeyboard::currentGroupNum() const
 {
     XkbStateRec xkbState;
@@ -260,6 +267,11 @@ std::string XKeyboard::currentGroupName() const
 std::string XKeyboard::currentGroupSymbol() const
 {
     return _symbolNames[currentGroupNum()];
+}
+
+std::string XKeyboard::currentGroupVariant() const
+{
+    return _variantNames[currentGroupNum()];
 }
 
 bool XKeyboard::setGroupByNum(int groupNum)
@@ -302,30 +314,48 @@ XkbSymbolParser::~XkbSymbolParser()
     _nonSymbols.clear();
 }
 
-void XkbSymbolParser::parse(const std::string& symbols, StringVector& symbolList)
+void XkbSymbolParser::parse(const std::string& symbols, StringVector& symbolList,
+    StringVector& variantList)
 {
     bool inSymbol = false;
     std::string curSymbol;
+    std::string curVariant;
 
-    for (int i = 0; i < symbols.size(); i++) {
+    //std::cout << symbols << std::endl;
+    // A sample line:
+    // pc+fi(dvorak)+fi:2+ru:3+inet(evdev)+group(menu_toggle)
+    
+    for (size_t i = 0; i < symbols.size(); i++) {
         char ch = symbols[i];
         if (ch == '+') {
             if (inSymbol) {
                 if (isXkbLayoutSymbol(curSymbol)) {
                     symbolList.push_back(curSymbol);
+                    variantList.push_back(curVariant);
                 }
                 curSymbol.clear();
+                curVariant.clear();
             } else {
                 inSymbol = true;
             }
         } else if (inSymbol && (isalpha(static_cast<int>(ch)) || ch == '_')) {
             curSymbol.append(1, ch);
+        } else if (inSymbol && ch == '(') {
+            while (++i < symbols.size()) {
+                ch = symbols[i];
+                if (ch == ')')
+                    break;
+                else
+                    curVariant.append(1, ch);
+            }
         } else {
             if (inSymbol) {
                 if (isXkbLayoutSymbol(curSymbol)) {
                     symbolList.push_back(curSymbol);
+                    variantList.push_back(curVariant);
                 }
                 curSymbol.clear();
+                curVariant.clear();
                 inSymbol = false;
             }
         }
@@ -333,6 +363,7 @@ void XkbSymbolParser::parse(const std::string& symbols, StringVector& symbolList
 
     if (inSymbol && !curSymbol.empty() && isXkbLayoutSymbol(curSymbol)) {
         symbolList.push_back(curSymbol);
+        variantList.push_back(curVariant);
     }
 }
 

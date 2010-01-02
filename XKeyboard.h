@@ -8,6 +8,8 @@
 // any later version.
 //
 // $Id: XKeyboard.h 29 2008-04-09 21:37:44Z jay $
+//
+// 2010-01-02 Kristian Setälä added code to retrieve layout variant information
 
 #ifndef XKEYBOARD_H_1C79861A_49B3_4A95_88D6_455C22FEB222
 #define XKEYBOARD_H_1C79861A_49B3_4A95_88D6_455C22FEB222
@@ -31,9 +33,11 @@ public:
     int groupCount() const;
     StringVector groupNames() const;
     StringVector groupSymbols() const;
+    StringVector groupVariants() const;
     int currentGroupNum() const;
     std::string currentGroupName() const;
     std::string currentGroupSymbol() const;
+    std::string currentGroupVariant() const;
     bool setGroupByNum(int groupNum);
     bool changeGroup(int increment);
 
@@ -51,6 +55,7 @@ private:
     int _groupCount;
     StringVector _groupNames;
     StringVector _symbolNames;
+    StringVector _variantNames;
     int _currentGroupNum;
 
     int _deviceId;
@@ -68,7 +73,8 @@ public:
 
     XkbSymbolParser();
     ~XkbSymbolParser();
-    void parse(const std::string& symbols, std::vector<std::string>& symbolList);
+    void parse(const std::string& symbols, std::vector<std::string>& symbolList,
+        std::vector<std::string>& variantList);
 	
 private:
     bool isXkbLayoutSymbol(const std::string& symbol);
