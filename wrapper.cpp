@@ -122,12 +122,39 @@ bool print_status(XKeyboard& xkb, string format) {
 }
 
 bool set_group(XKeyboard& xkb, string group) {
-    bool relative = (group[0] == '+' || group[0] == '-');
+    bool relative = false;
+
+    // Check that 'group' is a valid integer (and whether it's relative or not)
+    size_t i = 0;
+    if (group[0] == '+' || group[0] == '-') {
+        relative = true;
+        ++i;
+    }
+    for (; i < group.length(); ++i) {
+        if (!isdigit(group[i])) {
+            cerr << group << " is not an integer" << endl;
+            return false;
+        }
+    }
+
     int group_int = atoi(group.c_str());
-    if (relative)
-        return xkb.changeGroup(group_int);
-    else
-        return xkb.setGroupByNum(group_int);
+    if (relative) {
+        if (!xkb.changeGroup(group_int)) {
+            cerr << "Failed to change group" << endl;
+            return false;
+        }
+    } else {
+        if (group_int >= xkb.groupCount()) {
+            cerr << "layout_number must be between 0 and " << xkb.groupCount()-1 << endl;
+            return false;
+        } else {
+            if (!xkb.setGroupByNum(group_int)) {
+                cerr << "Failed to change group" << endl;
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 
@@ -145,10 +172,8 @@ int main(int argc, char* argv[])
                 if (!print_status(xkb, string(argv[2])))
                     return EXIT_FAILURE;
             } else if (command == "set") {
-                if (!set_group(xkb, string(argv[2]))) {
-                    cerr << "Failed to set layout" << endl;
+                if (!set_group(xkb, string(argv[2])))
                     return EXIT_FAILURE;
-                }
             } else {
                 print_usage(string(argv[0]));
                 return EXIT_FAILURE;
@@ -161,3 +186,4 @@ int main(int argc, char* argv[])
     }
     return EXIT_SUCCESS;
 }
+
