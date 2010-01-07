@@ -29,19 +29,19 @@ The command to print keyboard layout information is
 
 	xkblayout-state print format
 
-*format* is printed to stdout with the following substitutions (to include a literal *%* use `%%`).
+*format* is printed to **stdout** with the following substitutions (to include a literal *%* use `%%`):
 
 - `%c` -> The number of the currently active layout
 - `%n` -> The name of the currently active layout
 - `%s` -> The symbol of the currently active layout
-- `%v` -> The variant of the currently active layout *(this is empty if no variant is specified)*
-- `%e` -> The variant of the currently active layout *(this is the same as `%s` if no variant is specified)*
+- `%v` -> The variant of the currently active layout (*this is empty if no variant is specified*)
+- `%e` -> The variant of the currently active layout (*this is the same as `%s` if no variant is specified*)
 
 - `%C` -> The number of defined layouts
 - `%N` -> A list containing the names of the layouts (one per line)
 - `%S` -> A list containing the symbols of the layouts (one per line)
-- `%V` -> A list containing the variants of the layouts *(an empty line if no variant is specified for the respective layout)*
-- `%E` -> A list containing the variants of the layouts *(if no variant is specified for the respective symbol, the symbol itself is used)*
+- `%V` -> A list containing the variants of the layouts (one per line; *an empty line if no variant is specified for the respective layout*)
+- `%E` -> A list containing the variants of the layouts (one per line; *if no variant is specified for the respective symbol, the symbol itself is used*)
 
 
 ### Setting the active keyboard layout
