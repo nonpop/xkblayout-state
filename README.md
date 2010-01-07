@@ -40,7 +40,7 @@ The command to print keyboard layout information is
 - `%N` -> A list containing the names of the layouts (one per line)
 - `%S` -> A list containing the symbols of the layouts (one per line)
 - `%V` -> A list containing the variants of the layouts (one per line; *an empty line if no variant is specified for the respective layout*)
-- `%E` -> A list containing the variants of the layouts (one per line; *if no variant is specified for the respective symbol, the symbol itself is used*)
+- `%E` -> A list containing the variants of the layouts (one per line; *if no variant is specified for the respective symbol, the layout symbol is used*)
 
 
 ### Setting the active keyboard layout
