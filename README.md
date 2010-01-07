@@ -29,7 +29,7 @@ The command to print keyboard layout information is
 
 	xkblayout-state print format
 
-*format* is printed to stdout with the following substitutions (to include a literal *%* use `%%`.
+*format* is printed to stdout with the following substitutions (to include a literal *%* use `%%`).
 
 - `%c` -> The number of the currently active layout
 - `%n` -> The name of the currently active layout
