@@ -24,7 +24,7 @@ void print_usage(string progname)
          << "Usage: " << endl
          << endl
          << "To get the current layout(s):" << endl
-         << "  " << progname << " -p format" << endl
+         << "  " << progname << " print format" << endl
          << endl
          << "This causes the 'format' string to be printed on stdout with the following substitutions:" << endl
          << "  %c -> current layout number" << endl
@@ -40,17 +40,17 @@ void print_usage(string progname)
          << "  %% -> A literal '%'" << endl
          << endl
          << "For example:" << endl
-         << "  " << progname << " -p \"Current layout: %s(%e)\"" << endl
+         << "  " << progname << " print \"Current layout: %s(%e)\"" << endl
          << endl
          << "To set the current layout:" << endl
-         << "  " << progname << " -s layout_number" << endl
+         << "  " << progname << " set layout_number" << endl
          << endl
          << "Here 'layout_number' is the number of the layout to be set (starting from 0)" << endl
          << "and can be either absolute (default) or relative (if preceded with a plus or minus sign)." << endl
          << endl
          << "For example:" << endl
-         << "  " << progname << " -s 1" << endl
-         << "  " << progname << " -s +1" << endl
+         << "  " << progname << " set 1" << endl
+         << "  " << progname << " set +1" << endl
          << endl;
 }
 
@@ -131,10 +131,10 @@ int main(int argc, char* argv[])
             return EXIT_FAILURE;
         } else {
             string command(argv[1]);
-            if (command == "-p") {
+            if (command == "print") {
                 print_status(xkb, string(argv[2]));
                 return EXIT_SUCCESS;
-            } else if (command == "-s") {
+            } else if (command == "set") {
                 if (!set_group(xkb, string(argv[2]))) {
                     cerr << "Failed to set layout" << endl;
                     return EXIT_FAILURE;
@@ -150,4 +150,3 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 }
-
