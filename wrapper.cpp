@@ -9,9 +9,10 @@
 // Software Foundation; either version 2 of the License, or (at your option)
 // any later version.
 
-#include <iostream>
-#include <string>
 #include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <string>
 #include "XKeyboard.h"
 
 using namespace std;
@@ -19,7 +20,7 @@ using namespace std;
 void print_usage(string progname)
 {
     cerr << endl
-         << "xkblayout-state v1" << endl
+         << "xkblayout-state version 1b" << endl
          << endl
          << "Usage: " << endl
          << endl
@@ -54,61 +55,70 @@ void print_usage(string progname)
          << endl;
 }
 
-void print_status(XKeyboard& xkb, string format) {
+bool print_status(XKeyboard& xkb, string format) {
+    stringstream r;     // resulting string
+
     for (size_t i = 0; i < format.length(); ++i) {
         if (format[i] == '%' && i < format.length()-1) {
             switch (format[i+1]) {
                 case 'c':
-                    cout << xkb.currentGroupNum();
+                    r << xkb.currentGroupNum();
                     break;
                 case 'n':
-                    cout << xkb.currentGroupName();
+                    r << xkb.currentGroupName();
                     break;
                 case 's':
-                    cout << xkb.currentGroupSymbol();
+                    r << xkb.currentGroupSymbol();
                     break;
                 case 'v':
-                    cout << xkb.currentGroupVariant();
+                    r << xkb.currentGroupVariant();
                     break;
                 case 'e':
                     if (xkb.currentGroupVariant().empty())
-                        cout << xkb.currentGroupSymbol();
+                        r << xkb.currentGroupSymbol();
                     else
-                        cout << xkb.currentGroupVariant();
+                        r << xkb.currentGroupVariant();
                     break;
 
                 case 'C':
-                    cout << xkb.groupCount();
+                    r << xkb.groupCount();
                     break;
                 case 'N':
                     for (size_t j = 0; j < xkb.groupNames().size(); ++j)
-                        cout << xkb.groupNames()[j] << endl;
+                        r << xkb.groupNames()[j] << endl;
                     break;
                 case 'S':
                     for (size_t j = 0; j < xkb.groupSymbols().size(); ++j)
-                        cout << xkb.groupSymbols()[j] << endl;
+                        r << xkb.groupSymbols()[j] << endl;
                     break;
                 case 'V':
                     for (size_t j = 0; j < xkb.groupVariants().size(); ++j)
-                        cout << xkb.groupVariants()[j] << endl;
+                        r << xkb.groupVariants()[j] << endl;
                     break;
                 case 'E':
                     for (size_t j = 0; j < xkb.groupVariants().size(); ++j)
                         if (xkb.groupVariants()[j].empty())
-                            cout << xkb.groupSymbols()[j] << endl;
+                            r << xkb.groupSymbols()[j] << endl;
                         else
-                            cout << xkb.groupVariants()[j] << endl;
+                            r << xkb.groupVariants()[j] << endl;
+                    break;
+
+                case '%':
+                    r << '%';
                     break;
 
                 default:
-                    cout << format[i+1];
+                    cerr << "Unknown format character: " << format[i+1] << endl;
+                    return false;
                     break;
             }
             ++i;
         } else { // not '%'
-            cout << format[i];
+            r << format[i];
         }
     }
+    cout << r.str();
+    return true;
 }
 
 bool set_group(XKeyboard& xkb, string group) {
@@ -132,8 +142,8 @@ int main(int argc, char* argv[])
         } else {
             string command(argv[1]);
             if (command == "print") {
-                print_status(xkb, string(argv[2]));
-                return EXIT_SUCCESS;
+                if (!print_status(xkb, string(argv[2])))
+                    return EXIT_FAILURE;
             } else if (command == "set") {
                 if (!set_group(xkb, string(argv[2]))) {
                     cerr << "Failed to set layout" << endl;
@@ -149,4 +159,5 @@ int main(int argc, char* argv[])
         cerr << e.what() << endl;
         return EXIT_FAILURE;
     }
+    return EXIT_SUCCESS;
 }
