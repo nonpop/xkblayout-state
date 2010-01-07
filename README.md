@@ -36,7 +36,6 @@ The command to print keyboard layout information is
 - `%s` -> The symbol of the currently active layout
 - `%v` -> The variant of the currently active layout (*this is empty if no variant is specified*)
 - `%e` -> The variant of the currently active layout (*this is the same as `%s` if no variant is specified*)
-
 - `%C` -> The number of defined layouts
 - `%N` -> A list containing the names of the layouts (one per line)
 - `%S` -> A list containing the symbols of the layouts (one per line)
