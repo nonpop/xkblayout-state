@@ -11,3 +11,7 @@ xkblayout-state: XKeyboard.o wrapper.o
 
 clean: 
 	rm -f xkblayout-state XKeyboard.o wrapper.o
+
+dist:
+	tar cfa xkblayout-state-v1b.tar.gz Makefile README.md wrapper.cpp X11Exception.h XKeyboard.cpp XKeyboard.h
+
