@@ -7,7 +7,7 @@ Description
 
 *xkblayout-state* is a small command-line program to get/set the current XKB keyboard layout.
 
-It's a thin wrapper around a modified version of Jay Bromley's XKeyboard class, the original of which is included in <http://members.dslextreme.com/users/jbromley/files/ruby-xkb.tar.bz2>.
+It's a thin wrapper around a slightly version of Jay Bromley's XKeyboard class, the original of which is included in <http://members.dslextreme.com/users/jbromley/files/ruby-xkb.tar.bz2>.
 
 
 Compilation and installation
