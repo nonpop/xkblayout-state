@@ -327,7 +327,7 @@ void XkbSymbolParser::parse(const std::string& symbols, StringVector& symbolList
     
     for (size_t i = 0; i < symbols.size(); i++) {
         char ch = symbols[i];
-        if (ch == '+') {
+        if (ch == '+' || ch == '_') {
             if (inSymbol) {
                 if (isXkbLayoutSymbol(curSymbol)) {
                     symbolList.push_back(curSymbol);
