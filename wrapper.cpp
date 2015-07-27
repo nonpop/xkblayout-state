@@ -59,7 +59,7 @@ bool print_status(XKeyboard& xkb, string format) {
     stringstream r;     // resulting string
 
     for (size_t i = 0; i < format.length(); ++i) {
-        if (format[i] == '%' && i < format.length()-1) {
+        if (i < format.length()-2 && format[i] == '%') {
             switch (format[i+1]) {
                 case 'c':
                     r << xkb.currentGroupNum();
@@ -180,8 +180,8 @@ int main(int argc, char* argv[])
             }
         }
     }
-    catch (exception e) {
-        cerr << e.what() << endl;
+    catch (const exception *e) {
+        cerr << e->what() << endl;
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
