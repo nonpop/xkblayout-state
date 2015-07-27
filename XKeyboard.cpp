@@ -124,7 +124,7 @@ Bool XKeyboard::initializeXkb()
                 groupName = groupNameC;
                 std::string::size_type pos = groupName.find('(', 0);
                 if (pos != std::string::npos) {
-                    groupName = groupName.substr(0, pos + 1);
+                    groupName = groupName.substr(0, pos - 1);
                 }
                 _groupNames.push_back(groupName);
             }
