@@ -124,7 +124,7 @@ Bool XKeyboard::initializeXkb()
                 groupName = groupNameC;
                 std::string::size_type pos = groupName.find('(', 0);
                 if (pos != std::string::npos) {
-                    groupName = groupName.substr(0, pos + 1);
+                    groupName = groupName.substr(0, pos - 1);
                 }
                 _groupNames.push_back(groupName);
             }
@@ -327,7 +327,7 @@ void XkbSymbolParser::parse(const std::string& symbols, StringVector& symbolList
     
     for (size_t i = 0; i < symbols.size(); i++) {
         char ch = symbols[i];
-        if (ch == '+') {
+        if (ch == '+' || ch == '_') {
             if (inSymbol) {
                 if (isXkbLayoutSymbol(curSymbol)) {
                     symbolList.push_back(curSymbol);

@@ -13,7 +13,7 @@ class X11Exception : public std::exception
 {
 public:
     X11Exception() : _reason("unknown") {}
-    X11Exception(const std::string& what) : _reason(what) {}
+    explicit X11Exception(const std::string& what) : _reason(what) {}
     virtual ~X11Exception() throw () {};
     virtual const char* what() const throw () { return _reason.c_str(); }
 
@@ -21,9 +21,8 @@ private:
     std::string _reason;
 };
 
-#endif // GAMEEXCEPTION_H_FE39A315_6827_447B_AE62_5FA2C3FD391F
+#endif // X11EXCEPTION_H_FE39A315_6827_447B_AE62_5FA2C3FD391F
 
 // Local Variables:
 // mode: c++
 // End:
-
