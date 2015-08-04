@@ -59,7 +59,7 @@ bool print_status(XKeyboard& xkb, string format) {
     stringstream r;     // resulting string
 
     for (size_t i = 0; i < format.length(); ++i) {
-        if (i < format.length()-2 && format[i] == '%') {
+        if (i < format.length()-1 && format[i] == '%') {
             switch (format[i+1]) {
                 case 'c':
                     r << xkb.currentGroupNum();
