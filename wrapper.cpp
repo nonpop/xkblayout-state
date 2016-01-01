@@ -85,22 +85,22 @@ bool print_status(XKeyboard& xkb, string format) {
                     break;
                 case 'N':
                     for (size_t j = 0; j < xkb.groupNames().size(); ++j)
-                        r << xkb.groupNames()[j] << endl;
+                        r << "\n"<< xkb.groupNames()[j];
                     break;
                 case 'S':
                     for (size_t j = 0; j < xkb.groupSymbols().size(); ++j)
-                        r << xkb.groupSymbols()[j] << endl;
+                        r << "\n"<< xkb.groupSymbols()[j];
                     break;
                 case 'V':
                     for (size_t j = 0; j < xkb.groupVariants().size(); ++j)
-                        r << xkb.groupVariants()[j] << endl;
+                        r << "\n"<< xkb.groupVariants()[j];
                     break;
                 case 'E':
                     for (size_t j = 0; j < xkb.groupVariants().size(); ++j)
                         if (xkb.groupVariants()[j].empty())
-                            r << xkb.groupSymbols()[j] << endl;
+                            r << "\n"<< xkb.groupSymbols()[j];
                         else
-                            r << xkb.groupVariants()[j] << endl;
+                            r << "\n"<< xkb.groupVariants()[j];
                     break;
 
                 case '%':
@@ -117,8 +117,9 @@ bool print_status(XKeyboard& xkb, string format) {
             r << format[i];
         }
     }
-    cout << r.str();
+    cout << r.str() << endl;
     return true;
+    
 }
 
 bool set_group(XKeyboard& xkb, string group) {
