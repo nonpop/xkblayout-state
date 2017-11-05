@@ -2,23 +2,25 @@ CXXFLAGS ?= -O2
 
 PREFIX ?= /usr/local
 
-all: xkblayout-state
+headers := XKeyboard.h X11Exception.h
+sources := XKeyboard.cpp wrapper.cpp
+objects := $(sources:.cpp=.o)
+program := xkblayout-state
 
-XKeyboard.o: XKeyboard.cpp XKeyboard.h X11Exception.h
+all: $(program)
+
+$(objects): %.o: %.cpp $(headers)
 	$(CXX) $(CXXFLAGS) -Wall -c -o $@ $<
 
-wrapper.o: wrapper.cpp XKeyboard.h
-	$(CXX) $(CXXFLAGS) -Wall -c -o $@ $<
-
-xkblayout-state: XKeyboard.o wrapper.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -lX11 -o xkblayout-state $^
+$(program): $(objects)
+	$(CXX) $(CXXFLAGS) -lX11 $(LDFLAGS) -o $@ $^
 
 clean:
-	rm -f xkblayout-state XKeyboard.o wrapper.o
+	rm -f $(program) $(objects)
 
-install: xkblayout-state
-	install xkblayout-state $(DESTDIR)$(PREFIX)/bin
+install: $(program)
+	install $(program) $(DESTDIR)$(PREFIX)/bin
 
 dist:
-	tar cfa xkblayout-state-v1b.tar.gz Makefile README.md wrapper.cpp X11Exception.h XKeyboard.cpp XKeyboard.h
+	tar cfa $(program)-v1b.tar.gz Makefile README.md $(headers) $(sources)
 
