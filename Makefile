@@ -19,7 +19,7 @@ clean:
 	rm -f $(program) $(objects)
 
 install: $(program)
-	install $(program) $(DESTDIR)$(PREFIX)/bin
+	install -D -t $(DESTDIR)$(PREFIX)/bin $(program)
 
 dist:
 	tar cfa $(program)-v1b.tar.gz Makefile README.md $(headers) $(sources)
