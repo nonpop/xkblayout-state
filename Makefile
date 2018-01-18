@@ -13,7 +13,7 @@ $(objects): %.o: %.cpp $(headers)
 	$(CXX) $(CXXFLAGS) -Wall -c -o $@ $<
 
 $(program): $(objects)
-	$(CXX) $(CXXFLAGS) -lX11 $(LDFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ -lX11
 
 clean:
 	rm -f $(program) $(objects)
