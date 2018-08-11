@@ -122,6 +122,7 @@ Bool XKeyboard::initializeXkb()
                 _groupNames.push_back("");
             } else {
                 groupName = groupNameC;
+                // Remove everything after a brace, e.g. "English(US)" -> "English"
                 std::string::size_type pos = groupName.find('(', 0);
                 if (pos != std::string::npos) {
                     groupName = groupName.substr(0, pos - 1);
@@ -147,25 +148,34 @@ Bool XKeyboard::initializeXkb()
     }
 
     XkbSymbolParser symParser;
+
+    // Parser is supposed to extract layout symbols (like us, de, ru)
+    // and variants (like dvorak) from symName string. But sometimes 
+    // it gets nothing, for example on my system with Xwayland symName 
+    // is "(unnamed)" and both _symbolNames and _variantNames are empty.
     symParser.parse(symName, _symbolNames, _variantNames);
-    int count = _symbolNames.size();
-    if (count == 1 && _groupNames[0].empty()  && _symbolNames[0] == "jp") {
+    int symNameCount = _symbolNames.size();
+
+    if (symNameCount == 1 && _groupNames[0].empty() && _symbolNames[0] == "jp") {
         _groupCount = 2;
+        _symbolNames.resize(_groupCount);
+        _groupNames.resize(_groupCount);
         _symbolNames[1] = _symbolNames[0];
         _symbolNames[0] = "us";
         _groupNames[0] = "US/ASCII";
         _groupNames[1] = "Japanese";
     } else {
-        if (count < _groupCount) {
-            int j = count;
-            int k = _groupCount;
-            while (--j >= 0) _symbolNames[--k] = _symbolNames[j];
-            while (--k >= 0) _symbolNames[k] = "en_US";
+        // If there are less symbol names, than groups, 
+        // fill remaining with default name of "en_US".
+        if (symNameCount < _groupCount) {
+            while (_symbolNames.size() < (size_t)_groupCount) {
+                _symbolNames.insert(_symbolNames.begin(), "en_US");
+            }
         }
     }
 
-    count = _groupNames.size();
-    for (int i = 0; i < count; i++) {
+    int groupNameCount = _groupNames.size();
+    for (int i = 0; i < groupNameCount; i++) {
         if (_groupNames[i].empty()) {
             std::string name = getSymbolNameByResNum(i);
             if (name.empty()) {
@@ -186,12 +196,12 @@ Bool XKeyboard::initializeXkb()
 
 std::string XKeyboard::getSymbolNameByResNum(int groupResNum)
 {
-    return _symbolNames[groupNumResToXkb(groupResNum)];
+    return _symbolNames.at(groupNumResToXkb(groupResNum));
 }
 
 std::string XKeyboard::getGroupNameByResNum(int groupResNum)
 {
-    return _groupNames[groupNumResToXkb(groupResNum)];
+    return _groupNames.at(groupNumResToXkb(groupResNum));
 }
 
 int XKeyboard::groupNumResToXkb(int groupResNum)
@@ -201,13 +211,13 @@ int XKeyboard::groupNumResToXkb(int groupResNum)
 
 int XKeyboard::groupLookup(int srcValue, StringVector fromText, StringVector toText, int count)
 {
-    const std::string srcText = fromText[srcValue];
+    const std::string srcText = fromText.at(srcValue);
 
     if (!srcText.empty()) {
         std::string targetText;
 
         for (int i = 0; i < count; i++) {
-            targetText = toText[i];
+            targetText = toText.at(i);
             if (compareNoCase(srcText, targetText) == 0) {
                 srcValue = i;
                 break;
@@ -261,17 +271,17 @@ int XKeyboard::currentGroupNum() const
 
 std::string XKeyboard::currentGroupName() const
 {
-    return _groupNames[currentGroupNum()];
+    return _groupNames.at(currentGroupNum());
 }
 
 std::string XKeyboard::currentGroupSymbol() const
 {
-    return _symbolNames[currentGroupNum()];
+    return _symbolNames.at(currentGroupNum());
 }
 
 std::string XKeyboard::currentGroupVariant() const
 {
-    return _variantNames[currentGroupNum()];
+    return _variantNames.at(currentGroupNum());
 }
 
 bool XKeyboard::setGroupByNum(int groupNum)
