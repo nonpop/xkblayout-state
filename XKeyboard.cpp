@@ -36,6 +36,7 @@ XKeyboard::XKeyboard()
     int reasonReturn;
     _display = XkbOpenDisplay(displayName, &eventCode, &errorReturn, &major,
                               &minor, &reasonReturn);
+    free(displayName);
     switch (reasonReturn) {
     case XkbOD_BadLibraryVersion:
         throw X11Exception("Bad XKB library version.");
@@ -91,6 +92,10 @@ Bool XKeyboard::initializeXkb()
 
     if (kbdDescPtr->names == NULL) {
         std::cerr << "Failed to get keyboard description." << std::endl;
+        XFree(kbdDescPtr);
+        XkbFreeControls(kbdDescPtr, XkbAllControlsMask, true);
+        XkbFreeNames(kbdDescPtr, XkbSymbolsNameMask, true);
+        XkbFreeNames(kbdDescPtr, XkbGroupNamesMask, true);
         return False;
     }
 
@@ -141,9 +146,17 @@ Bool XKeyboard::initializeXkb()
         symName = symNameC;
         XFree(symNameC);
         if (symName.empty()) {
+            XFree(kbdDescPtr);
+            XkbFreeControls(kbdDescPtr, XkbAllControlsMask, true);
+            XkbFreeNames(kbdDescPtr, XkbSymbolsNameMask, true);
+            XkbFreeNames(kbdDescPtr, XkbGroupNamesMask, true);
             return False;
         }
     } else {
+        XFree(kbdDescPtr);
+        XkbFreeControls(kbdDescPtr, XkbAllControlsMask, true);
+        XkbFreeNames(kbdDescPtr, XkbSymbolsNameMask, true);
+        XkbFreeNames(kbdDescPtr, XkbGroupNamesMask, true);
         return False;
     }
 
@@ -190,6 +203,10 @@ Bool XKeyboard::initializeXkb()
     XkbStateRec xkbState;
     XkbGetState(_display, _deviceId, &xkbState);
     _currentGroupNum = xkbState.group;
+    XFree(kbdDescPtr);
+    XkbFreeControls(kbdDescPtr, XkbAllControlsMask, true);
+    XkbFreeNames(kbdDescPtr, XkbSymbolsNameMask, true);
+    XkbFreeNames(kbdDescPtr, XkbGroupNamesMask, true);
 
     return True;
 }
