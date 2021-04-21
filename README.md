@@ -13,7 +13,7 @@ It's a thin wrapper around a slightly version of Jay Bromley's XKeyboard class, 
 Compilation and installation
 ----------------------------
 
-- `apt install libx11-dev`
+- Make sure x11 development libraries are installed (eg. `apt install libx11-dev` on Ubuntu)
 - To compile just say: `make`
 - To install copy the resulting executable `xkblayout-state` somewhere in your path
 
