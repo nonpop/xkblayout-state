@@ -1,0 +1,15 @@
+# Exclude Dockerfile and .dockerignore so that the docker layer cache won't be
+# invalidated after editing them (which changes the build context if they are
+# not ignored).
+*Dockerfile*
+.dockerignore
+# Exclude git metadata since we only care about the working tree.
+.git
+.gitattributes
+.gitignore
+# Exclude docs
+*.md
+
+*~
+*.o
+xkblayout-state

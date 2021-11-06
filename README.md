@@ -17,6 +17,7 @@ Compilation and installation
 - To compile just say: `make`
 - To install copy the resulting executable `xkblayout-state` somewhere in your path
 
+Alternatively with docker: `docker build .`
 
 Usage
 -----
